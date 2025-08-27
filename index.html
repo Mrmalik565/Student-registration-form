@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Comprehensive University Application Form — Light/Dark Theme</title>
+<style>
+/* =============================================================================
+   THEME VARIABLES (light/dark)
+   ============================================================================= */
+:root{
+  /* Dark (default) */
+  --bg:#0b1220;
+  --panel:#0f172a;
+  --panel-2:#0d1425;
+  --text:#e6e9f2;
+  --muted:#9aa7bf;
+  --border:#1e293b;
+  --input:#0b1220;
+  --focus:#7c3aed;
+
+  /* Accents (static but subtle) */
+  --accent-1:#7c3aed; /* violet */
+  --accent-2:#22d3ee; /* cyan */
+
+  /* State colors */
+  --error:#ef4444;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+
+  /* Shadows */
+  --shadow:0 12px 32px rgba(0,0,0,.35);
+
+  /* Header gradient text stop colors (subtle on dark) */
+  --title-grad-1:#ffffff;
+  --title-grad-2:#e3e8ff;
+  --title-grad-3:#a7f3d0;
+  --title-grad-4:#93c5fd;
+}
+
+/* Light theme override */
+:root[data-theme="light"]{
+  --bg:#f7f8fb;
+  --panel:#ffffff;
+  --panel-2:#ffffff;
+  --text:#0f172a;
+  --muted:#5b667a;
+  --border:#e2e8f0;
+  --input:#ffffff;
+  --focus:#2563eb;
+
+  --shadow:0 10px 24px rgba(2,6,23,.08);
+
+  --title-grad-1:#0f172a;
+  --title-grad-2:#1f2937;
+  --title-grad-3:#2563eb;
+  --title-grad-4:#10b981;
+}
+
+/* =============================================================================
+   BASE
+   ============================================================================= */
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  background: var(--bg);
+  color:var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial;
+  line-height:1.5;
+}
+
+/* Header */
+header{
+  max-width:1200px;
+  margin:32px auto 18px;
+  padding:0 18px;
+  text-align:center;
+}
+.badge{
+  display:inline-flex; align-items:center; gap:8px;
+  height:34px; padding:0 12px; border-radius:999px;
+  font-size:13px; letter-spacing:.2px;
+  color:var(--text);
+  border:1px solid var(--border);
+  background: var(--panel-2);
+}
+.title{
+  margin:14px 0 6px;
+  font-weight:900;
+  font-size: clamp(26px, 2.6vw + 8px, 38px);
+  background: linear-gradient(90deg, var(--title-grad-1), var(--title-grad-2) 40%, var(--title-grad-3) 60%, var(--title-grad-4) 90%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.subtitle{
+  margin:0 auto;
+  color:var(--muted);
+  max-width:860px;
+}
+
+/* Theme toggle bar */
+.topbar{
+  max-width:1200px;
+  margin:8px auto 0;
+  padding:0 18px;
+  display:flex; justify-content:flex-end; align-items:center;
+}
+.theme-toggle{
+  display:inline-flex; align-items:center; gap:10px;
+  color:var(--muted);
+  font-weight:600;
+}
+.switch{
+  position:relative; width:54px; height:30px; border-radius:999px;
+  background: var(--panel-2);
+  border:1px solid var(--border);
+  cursor:pointer; transition: background .2s ease, border-color .2s ease;
+}
+.switch::after{
+  content:"";
+  position:absolute; top:3px; left:3px;
+  width:24px; height:24px; border-radius:50%;
+  background: var(--text);
+  transition: transform .18s ease;
+}
+input#themeCheckbox{ display:none; }
+input#themeCheckbox:checked + .switch::after{
+  transform: translateX(24px);
+}
+
+/* Container */
+.container{
+  max-width:1200px;
+  margin:26px auto 80px;
+  padding:0 18px;
+}
+
+/* =============================================================================
+   CARD (edge lightning removed)
+   ============================================================================= */
+.card{
+  position:relative;
+  border-radius:16px;
+  background: var(--panel);
+  border:1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: clip;
+}
+
+/* Section grid */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap:18px;
+  padding:22px;
+}
+
+/* Section headers */
+.section-head{
+  grid-column: 1 / -1;
+  padding:10px 14px;
+  border-left:3px solid var(--focus);
+  border-radius:10px;
+  background: color-mix(in oklab, var(--focus) 10%, transparent);
+  font-weight:800;
+  letter-spacing:.3px;
+  color:var(--text);
+}
+
+/* Field blocks */
+.field{
+  grid-column: span 6;
+  display:flex; flex-direction:column; gap:8px;
+}
+.field.full{ grid-column: 1 / -1; }
+.field.third{ grid-column: span 4; }
+.field.fourth{ grid-column: span 3; }
+
+label{ font-weight:700; color:var(--text); }
+.req{ color:var(--error); margin-left:4px; }
+.hint{ font-size:12px; color:var(--muted); }
+
+input, select, textarea, datalist, output{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background: var(--input);
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s, box-shadow .2s, background .2s, color .2s;
+}
+
+/* Focus ring (subtle, theme-colored) */
+input:focus, select:focus, textarea:focus{
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--focus) 18%, transparent);
+}
+
+/* Validation message text */
+.msg{ font-size:12px; min-height:16px; color:var(--muted); }
+.msg.error{ color:var(--error); }
+.msg.ok{ color:var(--ok); }
+.msg.warn{ color:var(--warn); }
+
+/* Error/OK input borders (no heavy glow) */
+input.error, select.error, textarea.error{
+  border-color: var(--error);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--error) 22%, transparent);
+}
+input.ok, select.ok, textarea.ok{
+  border-color: var(--ok);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ok) 18%, transparent);
+}
+
+/* Actions */
+.actions{
+  border-top:1px solid var(--border);
+  padding:16px 22px;
+  display:flex; gap:12px; justify-content:flex-end;
+  background: var(--panel-2);
+}
+button{
+  appearance:none;
+  border:none; border-radius:12px;
+  padding:12px 18px;
+  font-weight:800;
+  color:#fff;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  cursor:pointer;
+  transition: filter .15s ease, transform .06s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 18px color-mix(in oklab, var(--accent-1) 28%, transparent);
+}
+button:hover{ filter:brightness(1.06); box-shadow: 0 10px 22px color-mix(in oklab, var(--accent-1) 35%, transparent); }
+button:active{ transform: translateY(1px); }
+.btn-outline{
+  background: transparent;
+  color:var(--text);
+  border:1px solid var(--border);
+  box-shadow:none;
+}
+.secondary{
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+}
+
+/* Helpers */
+.note{ font-size:13px; color:var(--muted); }
+
+/* Responsive */
+@media (max-width: 1100px){
+  .field.fourth{ grid-column: span 4; }
+}
+@media (max-width: 900px){
+  .grid{ grid-template-columns: repeat(6, 1fr); }
+  .field, .field.third, .field.fourth{ grid-column: span 6; }
+}
+@media (max-width: 560px){
+  .grid{ grid-template-columns: repeat(2, 1fr); }
+  .field, .field.third, .field.fourth{ grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="badge" aria-label="Institution tag">🏛️ Global University Admissions • 2025–2026</div>
+  <h1 class="title">Comprehensive Student Application Form</h1>
+  <p class="subtitle">A professional, symmetrical, and extensively validated application form. Choose a light or dark theme for best readability.</p>
+</header>
+
+<div class="topbar" aria-label="Theme controls">
+  <label class="theme-toggle" for="themeCheckbox" title="Toggle Light/Dark">
+    <span>Dark</span>
+    <input type="checkbox" id="themeCheckbox" aria-label="Light/Dark theme" />
+    <span class="switch" aria-hidden="true"></span>
+    <span>Light</span>
+  </label>
+</div>
+
+<main class="container">
+  <form id="appForm" class="card" novalidate>
+    <div class="grid">
+      <!-- =========================================================
+           SECTION: Identity
+           ========================================================= -->
+      <div class="section-head">Personal Identity</div>
+
+      <div class="field third">
+        <label for="firstName">First/Given Name <span class="req">*</span></label>
+        <input id="firstName" name="firstName" type="text" autocomplete="given-name" placeholder="e.g., Asha" required minlength="2" maxlength="40" />
+        <div class="msg" id="msg-firstName"></div>
+      </div>
+
+      <div class="field third">
+        <label for="middleName">Middle Name</label>
+        <input id="middleName" name="middleName" type="text" placeholder="Optional" maxlength="40" />
+        <div class="msg" id="msg-middleName"></div>
+      </div>
+
+      <div class="field third">
+        <label for="lastName">Last/Family Name <span class="req">*</span></label>
+        <input id="lastName" name="lastName" type="text" autocomplete="family-name" placeholder="e.g., Sharma" required minlength="2" maxlength="40" />
+        <div class="msg" id="msg-lastName"></div>
+      </div>
+
+      <div class="field third">
+        <label for="preferredName">Preferred Name</label>
+        <input id="preferredName" name="preferredName" type="text" placeholder="How we should address you" maxlength="40" />
+        <div class="msg" id="msg-preferredName"></div>
+      </div>
+
+      <div class="field fourth">
+        <label for="dob">Date of Birth <span class="req">*</span></label>
+        <input id="dob" name="dob" type="date" required />
+        <div class="msg" id="msg-dob"></div>
+      </div>
+
+      <div class="field fourth">
+        <label for="gender">Gender <span class="req">*</span></label>
+        <select id="gender" name="gender" required>
+          <option value="">Select…</option>
+          <option>Female</option>
+          <option>Male</option>
+          <option>Non-binary</option>
+          <option>Prefer not to say</option>
+          <option>Self-describe</option>
+        </select>
+        <div class="msg" id="msg-gender"></div>
+      </div>
+
+      <div class="field fourth">
+        <label for="nationality">Nationality <span class="req">*</span></label>
+        <input id="nationality" name="nationality" type="text" placeholder="e.g., Indian" required minlength="2" maxlength="40" />
+        <div class="msg" id="msg-nationality"></div>
+      </div>
+
+      <div class="field fourth">
+        <label for="passportNo">Passport Number</label>
+        <input id="passportNo" name="passportNo" type="text" placeholder="If applicable" maxlength="20" />
+        <div class="msg" id="msg-passportNo"></div>
+      </div>
+
+      <div class="field fourth">
+        <label for="maritalStatus">Marital Status</label>
+        <select id="maritalStatus" name="maritalStatus">
+          <option value="">Select…</option>
+          <option>Single</option>
+          <option>Married</option>
+          <option>Divorced</option>
+          <option>Widowed</option>
+        </select>
+        <div class="msg" id="msg-maritalStatus"></div>
+      </div>
+
+      <div class="field">
+        <label for="aadhaar">National ID (e.g., Aadhaar) <span class="req">*</span></label>
+        <input id="aadhaar" name="aadhaar" type="text" inputmode="numeric" placeholder="12-digit ID (if applicable)" />
+        <div class="msg" id="msg-aadhaar"></div>
+      </div>
+
+      <div class="field">
+        <label for="bloodGroup">Blood Group</label>
+        <select id="bloodGroup" name="bloodGroup">
+          <option value="">Select…</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option>
+          <option>O+</option><option>O-</option>
+        </select>
+        <div class="msg" id="msg-bloodGroup"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Contact
+           ========================================================= -->
+      <div class="section-head">Contact Information</div>
+
+      <div class="field third">
+        <label for="email">Email Address <span class="req">*</span></label>
+        <input id="email" name="email" type="email" placeholder="name@example.com" required />
+        <div class="msg" id="msg-email"></div>
+      </div>
+
+      <div class="field third">
+        <label for="altEmail">Alternate Email</label>
+        <input id="altEmail" name="altEmail" type="email" placeholder="Optional" />
+        <div class="msg" id="msg-altEmail"></div>
+      </div>
+
+      <div class="field third">
+        <label for="phone">Mobile Number <span class="req">*</span></label>
+        <input id="phone" name="phone" type="tel" inputmode="numeric" placeholder="+91XXXXXXXXXX" required />
+        <div class="msg" id="msg-phone"></div>
+      </div>
+
+      <div class="field third">
+        <label for="altPhone">Alternate Phone</label>
+        <input id="altPhone" name="altPhone" type="tel" inputmode="numeric" placeholder="Optional" />
+        <div class="msg" id="msg-altPhone"></div>
+      </div>
+
+      <div class="field full">
+        <label for="addressLine1">Current Address Line 1 <span class="req">*</span></label>
+        <input id="addressLine1" name="addressLine1" type="text" placeholder="House/Street/Area" required />
+        <div class="msg" id="msg-addressLine1"></div>
+      </div>
+
+      <div class="field full">
+        <label for="addressLine2">Current Address Line 2</label>
+        <input id="addressLine2" name="addressLine2" type="text" placeholder="Landmark, neighborhood (optional)" />
+        <div class="msg" id="msg-addressLine2"></div>
+      </div>
+
+      <div class="field third">
+        <label for="city">City <span class="req">*</span></label>
+        <input id="city" name="city" type="text" required minlength="2" maxlength="40" />
+        <div class="msg" id="msg-city"></div>
+      </div>
+
+      <div class="field third">
+        <label for="state">State/UT <span class="req">*</span></label>
+        <input id="state" name="state" type="text" required minlength="2" maxlength="40" />
+        <div class="msg" id="msg-state"></div>
+      </div>
+
+      <div class="field third">
+        <label for="pincode">PIN/Postal Code <span class="req">*</span></label>
+        <input id="pincode" name="pincode" type="text" inputmode="numeric" placeholder="6-digit (India) or equivalent" required />
+        <div class="msg" id="msg-pincode"></div>
+      </div>
+
+      <div class="field third">
+        <label for="country">Country <span class="req">*</span></label>
+        <input id="country" name="country" type="text" placeholder="e.g., India" required />
+        <div class="msg" id="msg-country"></div>
+      </div>
+
+      <div class="field full">
+        <label for="permanentSame"><input type="checkbox" id="permanentSame" /> Permanent Address same as Current</label>
+        <div class="msg" id="msg-permanentSame"></div>
+      </div>
+
+      <div class="field full">
+        <label for="permAddress1">Permanent Address Line 1 <span class="req">*</span></label>
+        <input id="permAddress1" name="permAddress1" type="text" placeholder="House/Street/Area" required />
+        <div class="msg" id="msg-permAddress1"></div>
+      </div>
+
+      <div class="field full">
+        <label for="permAddress2">Permanent Address Line 2</label>
+        <input id="permAddress2" name="permAddress2" type="text" placeholder="Optional" />
+        <div class="msg" id="msg-permAddress2"></div>
+      </div>
+
+      <div class="field third">
+        <label for="permCity">Permanent City <span class="req">*</span></label>
+        <input id="permCity" name="permCity" type="text" required />
+        <div class="msg" id="msg-permCity"></div>
+      </div>
+
+      <div class="field third">
+        <label for="permState">Permanent State/UT <span class="req">*</span></label>
+        <input id="permState" name="permState" type="text" required />
+        <div class="msg" id="msg-permState"></div>
+      </div>
+
+      <div class="field third">
+        <label for="permPin">Permanent PIN/Postal Code <span class="req">*</span></label>
+        <input id="permPin" name="permPin" type="text" inputmode="numeric" required />
+        <div class="msg" id="msg-permPin"></div>
+      </div>
+
+      <div class="field third">
+        <label for="permCountry">Permanent Country <span class="req">*</span></label>
+        <input id="permCountry" name="permCountry" type="text" required />
+        <div class="msg" id="msg-permCountry"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Account Security
+           ========================================================= -->
+      <div class="section-head">Account Security</div>
+
+      <div class="field third">
+        <label for="username">Username <span class="req">*</span></label>
+        <input id="username" name="username" type="text" placeholder="4–20 characters" required />
+        <div class="msg" id="msg-username"></div>
+      </div>
+
+      <div class="field third">
+        <label for="password">Password <span class="req">*</span></label>
+        <input id="password" name="password" type="password" placeholder="At least 8 chars, A-Z, a-z, 0-9, symbol" required />
+        <div class="msg" id="msg-password"></div>
+      </div>
+
+      <div class="field third">
+        <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
+        <input id="confirmPassword" name="confirmPassword" type="password" required />
+        <div class="msg" id="msg-confirmPassword"></div>
+      </div>
+
+      <div class="field third">
+        <label for="securityQuestion">Security Question <span class="req">*</span></label>
+        <select id="securityQuestion" name="securityQuestion" required>
+          <option value="">Select…</option>
+          <option>What is your favorite teacher’s name?</option>
+          <option>What is the name of your first school?</option>
+          <option>What is your birthplace?</option>
+          <option>What is your favorite book?</option>
+        </select>
+        <div class="msg" id="msg-securityQuestion"></div>
+      </div>
+
+      <div class="field third">
+        <label for="securityAnswer">Security Answer <span class="req">*</span></label>
+        <input id="securityAnswer" name="securityAnswer" type="text" required minlength="2" maxlength="80" />
+        <div class="msg" id="msg-securityAnswer"></div>
+      </div>
+
+      <div class="field third">
+        <label for="twoFA"><input type="checkbox" id="twoFA" /> Enable 2FA (Email + SMS)</label>
+        <div class="msg" id="msg-twoFA"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Program Choices
+           ========================================================= -->
+      <div class="section-head">Program and Intake</div>
+
+      <div class="field third">
+        <label for="programLevel">Program Level <span class="req">*</span></label>
+        <select id="programLevel" name="programLevel" required>
+          <option value="">Select…</option>
+          <option value="UG">Undergraduate</option>
+          <option value="PG">Postgraduate</option>
+          <option value="Doctoral">Doctoral</option>
+          <option value="Diploma">Diploma/Certificate</option>
+        </select>
+        <div class="msg" id="msg-programLevel"></div>
+      </div>
+
+      <div class="field third">
+        <label for="program">Primary Program Choice <span class="req">*</span></label>
+        <select id="program" name="program" required>
+          <option value="">Select…</option>
+          <option>AI</option>
+          <option>B.Tech (CSE)</option>
+          <option>B.Tech (ECE)</option>
+          <option>B.Tech (ME)</option>
+          <option>B.Tech (CE)</option>
+          <option>BCA</option>
+          <option>BBA</option>
+          <option>B.Com</option>
+          <option>BA</option>
+          <option>B.Sc</option>
+          <option>M.Tech</option>
+          <option>MCA</option>
+          <option>MBA</option>
+          <option>M.Com</option>
+          <option>MA</option>
+          <option>M.Sc</option>
+          <option>Ph.D (CS)</option>
+          <option>Ph.D (Physics)</option>
+          <option>Ph.D (Management)</option>
+        </select>
+        <div class="msg" id="msg-program"></div>
+      </div>
+
+      <div class="field third">
+        <label for="specialization">Specialization</label>
+        <input id="specialization" name="specialization" type="text" placeholder="Optional specialization" maxlength="60" />
+        <div class="msg" id="msg-specialization"></div>
+      </div>
+
+      <div class="field third">
+        <label for="intakeYear">Intake Year <span class="req">*</span></label>
+        <select id="intakeYear" name="intakeYear" required>
+          <option value="">Select…</option>
+          <option>2025</option>
+          <option>2026</option>
+          <option>2027</option>
+          <option>2028</option>
+        </select>
+        <div class="msg" id="msg-intakeYear"></div>
+      </div>
+
+      <div class="field third">
+        <label for="intakeTerm">Intake Term/Semester <span class="req">*</span></label>
+        <select id="intakeTerm" name="intakeTerm" required>
+          <option value="">Select…</option>
+          <option>Fall</option>
+          <option>Spring</option>
+          <option>Summer</option>
+        </select>
+        <div class="msg" id="msg-intakeTerm"></div>
+      </div>
+
+      <div class="field third">
+        <label for="studyMode">Mode of Study <span class="req">*</span></label>
+        <select id="studyMode" name="studyMode" required>
+          <option value="">Select…</option>
+          <option>Regular</option>
+          <option>Distance</option>
+          <option>Evening</option>
+          <option>Online</option>
+          <option>Hybrid</option>
+        </select>
+        <div class="msg" id="msg-studyMode"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Academics
+           ========================================================= -->
+      <div class="section-head">Academic History</div>
+
+      <div class="field third">
+        <label for="lastInstitute">Most Recent Institution <span class="req">*</span></label>
+        <input id="lastInstitute" name="lastInstitute" type="text" required minlength="3" maxlength="100" />
+        <div class="msg" id="msg-lastInstitute"></div>
+      </div>
+
+      <div class="field third">
+        <label for="highestQualification">Highest Qualification <span class="req">*</span></label>
+        <select id="highestQualification" name="highestQualification" required>
+          <option value="">Select…</option>
+          <option>10th</option>
+          <option>12th</option>
+          <option>Diploma</option>
+          <option>Undergraduate</option>
+          <option>Postgraduate</option>
+        </select>
+        <div class="msg" id="msg-highestQualification"></div>
+      </div>
+
+      <div class="field third">
+        <label for="gradingScale">Grading Scale</label>
+        <select id="gradingScale" name="gradingScale">
+          <option value="">Select…</option>
+          <option>Percentage</option>
+          <option>CGPA (10)</option>
+          <option>GPA (4)</option>
+          <option>Other</option>
+        </select>
+        <div class="msg" id="msg-gradingScale"></div>
+      </div>
+
+      <div class="field third">
+        <label for="percentage">Overall Percentage/Score <span class="req">*</span></label>
+        <input id="percentage" name="percentage" type="number" step="0.01" min="0" max="100" placeholder="e.g., 82.50" required />
+        <div class="msg" id="msg-percentage"></div>
+      </div>
+
+      <div class="field third">
+        <label for="yearOfPassing">Year of Passing <span class="req">*</span></label>
+        <select id="yearOfPassing" name="yearOfPassing" required>
+          <option value="">Select…</option>
+          <option>2021</option><option>2022</option><option>2023</option>
+          <option>2024</option><option>2025</option><option>2026</option>
+        </select>
+        <div class="msg" id="msg-yearOfPassing"></div>
+      </div>
+
+      <div class="field third">
+        <label for="boardUniversity">Board/University <span class="req">*</span></label>
+        <input id="boardUniversity" name="boardUniversity" type="text" required minlength="3" maxlength="80" />
+        <div class="msg" id="msg-boardUniversity"></div>
+      </div>
+
+      <div class="field third">
+        <label for="subjectStream">Subject Stream</label>
+        <input id="subjectStream" name="subjectStream" type="text" placeholder="Science/Commerce/Arts/Other" maxlength="60" />
+        <div class="msg" id="msg-subjectStream"></div>
+      </div>
+
+      <div class="field third">
+        <label for="backlogs">Number of Backlogs</label>
+        <input id="backlogs" name="backlogs" type="number" min="0" max="20" value="0" />
+        <div class="msg" id="msg-backlogs"></div>
+      </div>
+
+      <div class="field third">
+        <label for="gapYears">Academic Gap (Years)</label>
+        <input id="gapYears" name="gapYears" type="number" min="0" max="10" value="0" />
+        <div class="msg" id="msg-gapYears"></div>
+      </div>
+
+      <div class="field full">
+        <label for="achievements">Academic Achievements</label>
+        <textarea id="achievements" name="achievements" rows="3" maxlength="1000" placeholder="Awards, scholarships, honors"></textarea>
+        <div class="msg" id="msg-achievements"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Entrance Exams (if any)
+           ========================================================= -->
+      <div class="section-head">Entrance Exams (If Applicable)</div>
+
+      <div class="field third">
+        <label for="examType">Exam Type</label>
+        <select id="examType" name="examType">
+          <option value="">Select…</option>
+          <option>JEE Main</option>
+          <option>JEE Advanced</option>
+          <option>GATE</option>
+          <option>CAT</option>
+          <option>MAT</option>
+          <option>GMAT</option>
+          <option>GRE</option>
+          <option>IELTS</option>
+          <option>TOEFL</option>
+          <option>SAT</option>
+          <option>ACT</option>
+          <option>None</option>
+        </select>
+        <div class="msg" id="msg-examType"></div>
+      </div>
+
+      <div class="field third">
+        <label for="examRoll">Roll/Registration Number</label>
+        <input id="examRoll" name="examRoll" type="text" maxlength="30" />
+        <div class="msg" id="msg-examRoll"></div>
+      </div>
+
+      <div class="field third">
+        <label for="examScore">Score</label>
+        <input id="examScore" name="examScore" type="number" step="0.01" min="0" max="1000" />
+        <div class="msg" id="msg-examScore"></div>
+      </div>
+
+      <div class="field third">
+        <label for="examPercentile">Percentile</label>
+        <input id="examPercentile" name="examPercentile" type="number" step="0.01" min="0" max="100" />
+        <div class="msg" id="msg-examPercentile"></div>
+      </div>
+
+      <div class="field third">
+        <label for="examDate">Exam Date</label>
+        <input id="examDate" name="examDate" type="date" />
+        <div class="msg" id="msg-examDate"></div>
+      </div>
+
+      <div class="field third">
+        <label for="englishProficiency">English Proficiency</label>
+        <select id="englishProficiency" name="englishProficiency">
+          <option value="">Select…</option>
+          <option>Native</option>
+          <option>Fluent</option>
+          <option>Intermediate</option>
+          <option>Basic</option>
+        </select>
+        <div class="msg" id="msg-englishProficiency"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Parent/Guardian
+           ========================================================= -->
+      <div class="section-head">Parent/Guardian Details</div>
+
+      <div class="field third">
+        <label for="fatherName">Father/Guardian Name <span class="req">*</span></label>
+        <input id="fatherName" name="fatherName" type="text" required minlength="2" maxlength="60" />
+        <div class="msg" id="msg-fatherName"></div>
+      </div>
+
+      <div class="field third">
+        <label for="motherName">Mother Name <span class="req">*</span></label>
+        <input id="motherName" name="motherName" type="text" required minlength="2" maxlength="60" />
+        <div class="msg" id="msg-motherName"></div>
+      </div>
+
+      <div class="field third">
+        <label for="guardianRelation">Guardian Relationship</label>
+        <select id="guardianRelation" name="guardianRelation">
+          <option value="">Select…</option>
+          <option>Father</option>
+          <option>Mother</option>
+          <option>Brother</option>
+          <option>Sister</option>
+          <option>Relative</option>
+          <option>Other</option>
+        </select>
+        <div class="msg" id="msg-guardianRelation"></div>
+      </div>
+
+      <div class="field third">
+        <label for="parentPhone">Parent/Guardian Phone <span class="req">*</span></label>
+        <input id="parentPhone" name="parentPhone" type="tel" inputmode="numeric" required />
+        <div class="msg" id="msg-parentPhone"></div>
+      </div>
+
+      <div class="field third">
+        <label for="parentEmail">Parent/Guardian Email</label>
+        <input id="parentEmail" name="parentEmail" type="email" />
+        <div class="msg" id="msg-parentEmail"></div>
+      </div>
+
+      <div class="field third">
+        <label for="familyIncome">Annual Family Income (INR)</label>
+        <input id="familyIncome" name="familyIncome" type="number" min="0" step="1000" placeholder="e.g., 800000" />
+        <div class="msg" id="msg-familyIncome"></div>
+      </div>
+
+      <div class="field third">
+        <label for="parentOccupation">Parent/Guardian Occupation</label>
+        <input id="parentOccupation" name="parentOccupation" type="text" maxlength="60" />
+        <div class="msg" id="msg-parentOccupation"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Category & Reservation
+           ========================================================= -->
+      <div class="section-head">Category and Reservation</div>
+
+      <div class="field third">
+        <label for="category">Category <span class="req">*</span></label>
+        <select id="category" name="category" required>
+          <option value="">Select…</option>
+          <option>General</option>
+          <option>SC</option>
+          <option>ST</option>
+          <option>OBC</option>
+          <option>EWS</option>
+          <option>PwD</option>
+        </select>
+        <div class="msg" id="msg-category"></div>
+      </div>
+
+      <div class="field third">
+        <label for="reservationClaim"><input type="checkbox" id="reservationClaim" /> Claim Reservation (if applicable)</label>
+        <div class="msg" id="msg-reservationClaim"></div>
+      </div>
+
+      <div class="field full">
+        <label for="reservationDetails">Reservation Details (certificate information, number, issuing authority)</label>
+        <textarea id="reservationDetails" name="reservationDetails" rows="3" maxlength="800"></textarea>
+        <div class="msg" id="msg-reservationDetails"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Health & Accessibility
+           ========================================================= -->
+      <div class="section-head">Health and Accessibility</div>
+
+      <div class="field third">
+        <label for="medicalConditions">Medical Conditions</label>
+        <input id="medicalConditions" name="medicalConditions" type="text" placeholder="e.g., Asthma, Diabetes" maxlength="120" />
+        <div class="msg" id="msg-medicalConditions"></div>
+      </div>
+
+      <div class="field third">
+        <label for="allergies">Allergies</label>
+        <input id="allergies" name="allergies" type="text" placeholder="e.g., Peanuts, Penicillin" maxlength="120" />
+        <div class="msg" id="msg-allergies"></div>
+      </div>
+
+      <div class="field third">
+        <label for="disabilitySupport"><input type="checkbox" id="disabilitySupport" /> Require Accessibility Support</label>
+        <div class="msg" id="msg-disabilitySupport"></div>
+      </div>
+
+      <div class="field full">
+        <label for="accessibilityNotes">Accessibility Notes</label>
+        <textarea id="accessibilityNotes" name="accessibilityNotes" rows="3" maxlength="800" placeholder="Describe support required"></textarea>
+        <div class="msg" id="msg-accessibilityNotes"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Co-curricular & Experience
+           ========================================================= -->
+      <div class="section-head">Co‑curricular, Projects, and Experience</div>
+
+      <div class="field full">
+        <label for="projects">Projects</label>
+        <textarea id="projects" name="projects" rows="3" maxlength="1200" placeholder="List major academic or personal projects"></textarea>
+        <div class="msg" id="msg-projects"></div>
+      </div>
+
+      <div class="field full">
+        <label for="workExperience">Work/Internship Experience</label>
+        <textarea id="workExperience" name="workExperience" rows="3" maxlength="1200" placeholder="Organization, role, duration, responsibilities"></textarea>
+        <div class="msg" id="msg-workExperience"></div>
+      </div>
+
+      <div class="field full">
+        <label for="extraCurricular">Extra‑curricular Activities</label>
+        <textarea id="extraCurricular" name="extraCurricular" rows="3" maxlength="1000" placeholder="Sports, clubs, volunteer work"></textarea>
+        <div class="msg" id="msg-extraCurricular"></div>
+      </div>
+
+      <div class="field full">
+        <label for="sop">Statement of Purpose <span class="req">*</span></label>
+        <textarea id="sop" name="sop" rows="6" maxlength="3000" placeholder="Explain your motivation, goals, and fit for the program" required></textarea>
+        <div class="msg" id="msg-sop"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: References
+           ========================================================= -->
+      <div class="section-head">References (Academic/Professional)</div>
+
+      <!-- Reference 1 -->
+      <div class="field third">
+        <label for="ref1Name">Referee 1 Name <span class="req">*</span></label>
+        <input id="ref1Name" name="ref1Name" type="text" required minlength="3" maxlength="80" />
+        <div class="msg" id="msg-ref1Name"></div>
+      </div>
+      <div class="field third">
+        <label for="ref1Email">Referee 1 Email <span class="req">*</span></label>
+        <input id="ref1Email" name="ref1Email" type="email" required />
+        <div class="msg" id="msg-ref1Email"></div>
+      </div>
+      <div class="field third">
+        <label for="ref1Phone">Referee 1 Phone</label>
+        <input id="ref1Phone" name="ref1Phone" type="tel" inputmode="numeric" />
+        <div class="msg" id="msg-ref1Phone"></div>
+      </div>
+      <div class="field full">
+        <label for="ref1Relation">Referee 1 Relation & Organization</label>
+        <input id="ref1Relation" name="ref1Relation" type="text" maxlength="120" />
+        <div class="msg" id="msg-ref1Relation"></div>
+      </div>
+
+      <!-- Reference 2 -->
+      <div class="field third">
+        <label for="ref2Name">Referee 2 Name <span class="req">*</span></label>
+        <input id="ref2Name" name="ref2Name" type="text" required minlength="3" maxlength="80" />
+        <div class="msg" id="msg-ref2Name"></div>
+      </div>
+      <div class="field third">
+        <label for="ref2Email">Referee 2 Email <span class="req">*</span></label>
+        <input id="ref2Email" name="ref2Email" type="email" required />
+        <div class="msg" id="msg-ref2Email"></div>
+      </div>
+      <div class="field third">
+        <label for="ref2Phone">Referee 2 Phone</label>
+        <input id="ref2Phone" name="ref2Phone" type="tel" inputmode="numeric" />
+        <div class="msg" id="msg-ref2Phone"></div>
+      </div>
+      <div class="field full">
+        <label for="ref2Relation">Referee 2 Relation & Organization</label>
+        <input id="ref2Relation" name="ref2Relation" type="text" maxlength="120" />
+        <div class="msg" id="msg-ref2Relation"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Documents & Uploads
+           ========================================================= -->
+      <div class="section-head">Documents and Uploads</div>
+
+      <div class="field third">
+        <label for="photo">Recent Passport Photo (JPEG/PNG, max 1MB) <span class="req">*</span></label>
+        <input id="photo" name="photo" type="file" accept=".jpg,.jpeg,.png" required />
+        <div class="msg" id="msg-photo"></div>
+      </div>
+
+      <div class="field third">
+        <label for="idDoc">Government ID/Passport (PDF, max 2MB) <span class="req">*</span></label>
+        <input id="idDoc" name="idDoc" type="file" accept=".pdf" required />
+        <div class="msg" id="msg-idDoc"></div>
+      </div>
+
+      <div class="field third">
+        <label for="marksheet">Latest Marksheet/Transcript (PDF, max 5MB) <span class="req">*</span></label>
+        <input id="marksheet" name="marksheet" type="file" accept=".pdf" required />
+        <div class="msg" id="msg-marksheet"></div>
+      </div>
+
+      <div class="field third">
+        <label for="resume">Resume/CV (PDF, max 2MB)</label>
+        <input id="resume" name="resume" type="file" accept=".pdf" />
+        <div class="msg" id="msg-resume"></div>
+      </div>
+
+      <div class="field third">
+        <label for="sopUpload">SOP Upload (PDF, max 2MB)</label>
+        <input id="sopUpload" name="sopUpload" type="file" accept=".pdf" />
+        <div class="msg" id="msg-sopUpload"></div>
+      </div>
+
+      <div class="field third">
+        <label for="examScorecard">Entrance Scorecard (PDF, max 2MB)</label>
+        <input id="examScorecard" name="examScorecard" type="file" accept=".pdf" />
+        <div class="msg" id="msg-examScorecard"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Declarations and Preferences
+           ========================================================= -->
+      <div class="section-head">Declarations and Preferences</div>
+
+      <div class="field full">
+        <label><input type="checkbox" id="agree" required /> I confirm that all information provided is accurate and I consent to data processing for admission purposes. <span class="req">*</span></label>
+        <div class="msg" id="msg-agree"></div>
+      </div>
+
+      <div class="field full">
+        <label><input type="checkbox" id="honesty" required /> I understand that providing false information may lead to rejection or cancellation of admission at any stage. <span class="req">*</span></label>
+        <div class="msg" id="msg-honesty"></div>
+      </div>
+
+      <div class="field full">
+        <label><input type="checkbox" id="updates" /> I want to receive application updates via Email/SMS.</label>
+        <div class="msg" id="msg-updates"></div>
+      </div>
+
+      <div class="field third">
+        <label for="hostel">Hostel Accommodation Required?</label>
+        <select id="hostel" name="hostel">
+          <option value="">Select…</option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>Maybe</option>
+        </select>
+        <div class="msg" id="msg-hostel"></div>
+      </div>
+
+      <div class="field third">
+        <label for="transport">Campus Transport Required?</label>
+        <select id="transport" name="transport">
+          <option value="">Select…</option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>Maybe</option>
+        </select>
+        <div class="msg" id="msg-transport"></div>
+      </div>
+
+      <div class="field third">
+        <label for="mealPref">Meal Preference</label>
+        <select id="mealPref" name="mealPref">
+          <option value="">Select…</option>
+          <option>Vegetarian</option>
+          <option>Non‑Vegetarian</option>
+          <option>Vegan</option>
+          <option>Jain</option>
+          <option>Other</option>
+        </select>
+        <div class="msg" id="msg-mealPref"></div>
+      </div>
+
+      <!-- =========================================================
+           SECTION: Additional Information
+           ========================================================= -->
+      <div class="section-head">Additional Information</div>
+
+      <div class="field full">
+        <label for="howHeard">How did you hear about this University?</label>
+        <select id="howHeard" name="howHeard">
+          <option value="">Select…</option>
+          <option>Friends/Family</option>
+          <option>School/College Counselor</option>
+          <option>University Website</option>
+          <option>Social Media</option>
+          <option>Education Fair</option>
+          <option>Agent/Consultant</option>
+          <option>Other</option>
+        </select>
+        <div class="msg" id="msg-howHeard"></div>
+      </div>
+
+      <div class="field full">
+        <label for="additionalNotes">Additional Notes</label>
+        <textarea id="additionalNotes" name="additionalNotes" rows="3" maxlength="1200" placeholder="Anything else we should know"></textarea>
+        <div class="msg" id="msg-additionalNotes"></div>
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button type="button" id="resetBtn" class="btn-outline">Reset</button>
+      <button type="submit" id="submitBtn" class="secondary">Submit Application</button>
+    </div>
+  </form>
+</main>
+
+<script>
+/* =============================================================================
+   THEME TOGGLE (persist with localStorage)
+   ============================================================================= */
+const root = document.documentElement;
+const themeCheckbox = document.getElementById('themeCheckbox');
+const savedTheme = localStorage.getItem('theme');
+
+function applyTheme(theme){
+  if(theme === 'light'){
+    root.setAttribute('data-theme','light');
+    themeCheckbox.checked = true;
+  }else{
+    root.setAttribute('data-theme','dark');
+    themeCheckbox.checked = false;
+  }
+}
+
+applyTheme(savedTheme || 'dark');
+
+themeCheckbox.addEventListener('change', ()=>{
+  const newTheme = themeCheckbox.checked ? 'light' : 'dark';
+  applyTheme(newTheme);
+  localStorage.setItem('theme', newTheme);
+});
+
+/* =============================================================================
+   VALIDATION UTILITIES (unchanged, small tweaks safe)
+   ============================================================================= */
+const el = id => document.getElementById(id);
+const setMsg = (id, text='', type='')=>{
+  const m = el(id); if(!m) return;
+  m.textContent = text;
+  m.className = 'msg' + (type ? ' ' + type : '');
+};
+const setError = (input, msgId, text)=>{
+  if(input) input.classList.add('error');
+  setMsg(msgId, text, 'error');
+  return false;
+};
+const setOK = function(input, msgId, text){
+  text = typeof text === 'undefined' ? '' : text;
+  if(input){
+    input.classList.remove('error');
+    if(text) input.classList.add('ok'); else input.classList.remove('ok');
+  }
+  setMsg(msgId, text, text ? 'ok' : '');
+  return true;
+};
+
+/* Regex and rules */
+const nameRe = /^[A-Za-z][A-Za-z\s'.-]{1,59}$/;
+const simpleTextRe = /^[A-Za-z][A-Za-z\s'.-]{1,59}$/;
+const cityRe = /^[A-Za-z][A-Za-z\s'.-]{1,59}$/;
+const stateRe = /^[A-Za-z][A-Za-z\s'.-]{1,59}$/;
+const pinINRe = /^[1-9][0-9]{5}$/; /* India PIN */
+const genericZipRe = /^[A-Za-z0-9-\s]{3,12}$/; /* fallback */
+const phoneINRe = /^(\\+91[-\\s]?)?[6-9]\\d{9}$/;
+const phoneGenericRe = /^[+]?[\\d\\s-]{7,20}$/;
+const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
+const usernameRe = /^[A-Za-z0-9_.-]{4,20}$/;
+const passportRe = /^[A-Za-z0-9]{5,20}$/;
+const aadhaarRe = /^\\d{12}$/;
+const percent0to100 = v => !isNaN(v) && v >= 0 && v <= 100;
+const fileAccept = (file, types, maxMB) => {
+  if(!file) return {ok:false, reason:'Required'};
+  const okType = types.includes(file.type);
+  const okSize = file.size <= maxMB*1024*1024;
+  if(!okType) return {ok:false, reason:'Invalid file type'};
+  if(!okSize) return {ok:false, reason:'File too large (> ' + maxMB + ' MB)'};
+  return {ok:true};
+};
+const passwordRules = { min:8, upper:/[A-Z]/, lower:/[a-z]/, digit:/\d/, symbol:/[^A-Za-z0-9]/ };
+
+/* Fields */
+const F = {
+  firstName: el('firstName'),
+  middleName: el('middleName'),
+  lastName: el('lastName'),
+  preferredName: el('preferredName'),
+  dob: el('dob'),
+  gender: el('gender'),
+  nationality: el('nationality'),
+  passportNo: el('passportNo'),
+  maritalStatus: el('maritalStatus'),
+  aadhaar: el('aadhaar'),
+  bloodGroup: el('bloodGroup'),
+
+  email: el('email'),
+  altEmail: el('altEmail'),
+  phone: el('phone'),
+  altPhone: el('altPhone'),
+  addressLine1: el('addressLine1'),
+  addressLine2: el('addressLine2'),
+  city: el('city'),
+  state: el('state'),
+  pincode: el('pincode'),
+  country: el('country'),
+
+  permanentSame: el('permanentSame'),
+  permAddress1: el('permAddress1'),
+  permAddress2: el('permAddress2'),
+  permCity: el('permCity'),
+  permState: el('permState'),
+  permPin: el('permPin'),
+  permCountry: el('permCountry'),
+
+  username: el('username'),
+  password: el('password'),
+  confirmPassword: el('confirmPassword'),
+  securityQuestion: el('securityQuestion'),
+  securityAnswer: el('securityAnswer'),
+  twoFA: el('twoFA'),
+
+  programLevel: el('programLevel'),
+  program: el('program'),
+  specialization: el('specialization'),
+  intakeYear: el('intakeYear'),
+  intakeTerm: el('intakeTerm'),
+  studyMode: el('studyMode'),
+
+  lastInstitute: el('lastInstitute'),
+  highestQualification: el('highestQualification'),
+  gradingScale: el('gradingScale'),
+  percentage: el('percentage'),
+  yearOfPassing: el('yearOfPassing'),
+  boardUniversity: el('boardUniversity'),
+  subjectStream: el('subjectStream'),
+  backlogs: el('backlogs'),
+  gapYears: el('gapYears'),
+  achievements: el('achievements'),
+
+  examType: el('examType'),
+  examRoll: el('examRoll'),
+  examScore: el('examScore'),
+  examPercentile: el('examPercentile'),
+  examDate: el('examDate'),
+  englishProficiency: el('englishProficiency'),
+
+  fatherName: el('fatherName'),
+  motherName: el('motherName'),
+  guardianRelation: el('guardianRelation'),
+  parentPhone: el('parentPhone'),
+  parentEmail: el('parentEmail'),
+  familyIncome: el('familyIncome'),
+  parentOccupation: el('parentOccupation'),
+
+  category: el('category'),
+  reservationClaim: el('reservationClaim'),
+  reservationDetails: el('reservationDetails'),
+
+  medicalConditions: el('medicalConditions'),
+  allergies: el('allergies'),
+  disabilitySupport: el('disabilitySupport'),
+  accessibilityNotes: el('accessibilityNotes'),
+
+  projects: el('projects'),
+  workExperience: el('workExperience'),
+  extraCurricular: el('extraCurricular'),
+  sop: el('sop'),
+
+  ref1Name: el('ref1Name'),
+  ref1Email: el('ref1Email'),
+  ref1Phone: el('ref1Phone'),
+  ref1Relation: el('ref1Relation'),
+  ref2Name: el('ref2Name'),
+  ref2Email: el('ref2Email'),
+  ref2Phone: el('ref2Phone'),
+  ref2Relation: el('ref2Relation'),
+
+  photo: el('photo'),
+  idDoc: el('idDoc'),
+  marksheet: el('marksheet'),
+  resume: el('resume'),
+  sopUpload: el('sopUpload'),
+  examScorecard: el('examScorecard'),
+
+  agree: el('agree'),
+  honesty: el('honesty'),
+  updates: el('updates'),
+  hostel: el('hostel'),
+  transport: el('transport'),
+  mealPref: el('mealPref'),
+  howHeard: el('howHeard'),
+  additionalNotes: el('additionalNotes'),
+};
+
+/* Validation Functions */
+function vName(input, msgId){
+  const v = (input.value||'').trim();
+  if(!v) return setError(input, msgId, 'Required');
+  if(!nameRe.test(v)) return setError(input, msgId, "Only letters, spaces, . ' - (2–60 chars)");
+  return setOK(input, msgId);
+}
+function vOptionalName(input, msgId){
+  const v = (input.value||'').trim();
+  if(!v) return setOK(input, msgId);
+  if(!nameRe.test(v)) return setError(input, msgId, "Only letters, spaces, . ' - (2–60 chars)");
+  return setOK(input, msgId);
+}
+function vPreferredName(input, msgId){
+  const v = (input.value||'').trim();
+  if(!v) return setOK(input, msgId);
+  if(v.length < 2 || v.length > 40) return setError(input, msgId, '2–40 characters');
+  return setOK(input, msgId);
+}
+function vDOB(input, msgId){
+  const v = input.value;
+  if(!v) return setError(input, msgId, 'Required');
+  const d = new Date(v);
+  if(isNaN(d.getTime())) return setError(input, msgId, 'Invalid date');
+  const today = new Date();
+  const age = new Date(today - d).getUTCFullYear() - 1970;
+  if(age < 15) return setError(input, msgId, 'Minimum age is 15');
+  if(age > 80) return setError(input, msgId, 'Maximum age is 80');
+  return setOK(input, msgId);
+}
+function vSelectRequired(input, msgId){
+  if(!input.value) return setError(input, msgId, 'Please select an option');
+  return setOK(input, msgId);
+}
+function vNationality(input, msgId){
+  const v = input.value.trim();
+  if(!v) return setError(input, msgId, 'Required');
+  if(!simpleTextRe.test(v)) return setError(input, msgId, 'Use letters/spaces only (2–60 chars)');
+  return setOK(input, msgId);
+}
+function vPassport(input, msgId){
+  const v = input.value.trim();
+  if(!v) return setOK(input, msgId);
+  if(!passportRe.test(v)) return setError(input, msgId, '5–20 alphanumeric');
+  return setOK(input, msgId);
+}
+function vAadhaar(input, msgId){
+  const v = input.value.trim();
+  if(!v) return setOK(input, msgId);
+  if(!aadhaarRe.test(v)) return setError(input, msgId, 'Must be 12 digits');
+  return setOK(input, msgId);
+}
+function vEmail(input, msgId, required=true){
+  const v = input.value.trim();
+  if(!v) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(!emailRe.test(v)) return setError(input, msgId, 'Invalid email format');
+  return setOK(input, msgId);
+}
+function vPhone(input, msgId, required=true){
+  const v = input.value.trim();
+  if(!v) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(phoneINRe.test(v) || phoneGenericRe.test(v)) return setOK(input, msgId);
+  return setError(input, msgId, "Use +countrycode and digits (7–20 chars). For India: +91XXXXXXXXXX or 10-digit starting 6–9");
+}
+function vTextLen(input, msgId, min=3, max=120, required=true){
+  const v = (input.value||'').trim();
+  if(!v) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(v.length < min) return setError(input, msgId, `Min ${min} characters`);
+  if(v.length > max) return setError(input, msgId, `Max ${max} characters`);
+  return setOK(input, msgId);
+}
+function vCity(input, msgId, required=true){
+  const v = input.value.trim();
+  if(!v) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(!cityRe.test(v)) return setError(input, msgId, "Letters/spaces . ' - only (2–60 chars)");
+  return setOK(input, msgId);
+}
+function vState(input, msgId, required=true){
+  const v = input.value.trim();
+  if(!v) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(!stateRe.test(v)) return setError(input, msgId, "Letters/spaces . ' - only (2–60 chars)");
+  return setOK(input, msgId);
+}
+function vPin(input, msgId, required=true){
+  const v = input.value.trim();
+  if(!v) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(pinINRe.test(v) || genericZipRe.test(v)) return setOK(input, msgId);
+  return setError(input, msgId, 'Invalid PIN/ZIP');
+}
+function vUsername(input, msgId){
+  const v = input.value.trim();
+  if(!v) return setError(input, msgId, 'Required');
+  if(!usernameRe.test(v)) return setError(input, msgId, '4–20 chars: letters, numbers, _ . -');
+  return setOK(input, msgId);
+}
+function vPassword(input, msgId){
+  const v = input.value;
+  if(!v) return setError(input, msgId, 'Required');
+  const issues = [];
+  if(v.length < passwordRules.min) issues.push('8+ chars');
+  if(!passwordRules.upper.test(v)) issues.push('1 uppercase');
+  if(!passwordRules.lower.test(v)) issues.push('1 lowercase');
+  if(!passwordRules.digit.test(v)) issues.push('1 number');
+  if(!passwordRules.symbol.test(v)) issues.push('1 symbol');
+  if(issues.length) return setError(input, msgId, 'Needs: '+issues.join(', '));
+  return setOK(input, msgId, 'Strong password');
+}
+function vConfirmPassword(input, msgId){
+  if(!input.value) return setError(input, msgId, 'Required');
+  if(input.value !== F.password.value) return setError(input, msgId, 'Passwords do not match');
+  return setOK(input, msgId, 'Matched');
+}
+function vPercent(input, msgId, required=true){
+  const v = Number(input.value);
+  if(Number.isNaN(v)) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  if(!percent0to100(v)) return setError(input, msgId, 'Must be 0–100');
+  return setOK(input, msgId);
+}
+function vNonNegInt(input, msgId, max=999){
+  const v = input.value.trim();
+  if(v === '') return setOK(input, msgId);
+  const n = Number(v);
+  if(!Number.isInteger(n) || n < 0 || n > max) return setError(input, msgId, `0–${max} only`);
+  return setOK(input, msgId);
+}
+function vFile(input, msgId, types, maxMB, required=true){
+  const file = input.files && input.files[0];
+  if(!file) return required ? setError(input, msgId, 'Required') : setOK(input, msgId);
+  const {ok, reason} = fileAccept(file, types, maxMB);
+  if(!ok) return setError(input, msgId, reason);
+  return setOK(input, msgId, 'Looks good');
+}
+function vCheckboxRequired(input, msgId){
+  if(!input.checked) return setError(input, msgId, 'You must agree');
+  return setOK(input, msgId);
+}
+
+/* Live bindings */
+function bind(){
+  F.firstName.addEventListener('input',()=>vName(F.firstName,'msg-firstName'));
+  F.middleName.addEventListener('input',()=>vOptionalName(F.middleName,'msg-middleName'));
+  F.lastName.addEventListener('input',()=>vName(F.lastName,'msg-lastName'));
+  F.preferredName.addEventListener('input',()=>vPreferredName(F.preferredName,'msg-preferredName'));
+
+  F.dob.addEventListener('change',()=>vDOB(F.dob,'msg-dob'));
+  F.gender.addEventListener('change',()=>vSelectRequired(F.gender,'msg-gender'));
+  F.nationality.addEventListener('input',()=>vNationality(F.nationality,'msg-nationality'));
+  F.passportNo.addEventListener('input',()=>vPassport(F.passportNo,'msg-passportNo'));
+  F.maritalStatus.addEventListener('change',()=>setOK(F.maritalStatus,'msg-maritalStatus'));
+  F.aadhaar.addEventListener('input',()=>vAadhaar(F.aadhaar,'msg-aadhaar'));
+  F.bloodGroup.addEventListener('change',()=>setOK(F.bloodGroup,'msg-bloodGroup'));
+
+  F.email.addEventListener('input',()=>vEmail(F.email,'msg-email',true));
+  F.altEmail.addEventListener('input',()=>vEmail(F.altEmail,'msg-altEmail',false));
+  F.phone.addEventListener('input',()=>vPhone(F.phone,'msg-phone',true));
+  F.altPhone.addEventListener('input',()=>vPhone(F.altPhone,'msg-altPhone',false));
+  F.addressLine1.addEventListener('input',()=>vTextLen(F.addressLine1,'msg-addressLine1',6,160,true));
+  F.addressLine2.addEventListener('input',()=>vTextLen(F.addressLine2,'msg-addressLine2',0,160,false));
+  F.city.addEventListener('input',()=>vCity(F.city,'msg-city',true));
+  F.state.addEventListener('input',()=>vState(F.state,'msg-state',true));
+  F.pincode.addEventListener('input',()=>vPin(F.pincode,'msg-pincode',true));
+  F.country.addEventListener('input',()=>vTextLen(F.country,'msg-country',2,60,true));
+
+  F.permanentSame.addEventListener('change', handlePermanentSame);
+
+  F.permAddress1.addEventListener('input',()=>vTextLen(F.permAddress1,'msg-permAddress1',6,160,true));
+  F.permAddress2.addEventListener('input',()=>vTextLen(F.permAddress2,'msg-permAddress2',0,160,false));
+  F.permCity.addEventListener('input',()=>vCity(F.permCity,'msg-permCity',true));
+  F.permState.addEventListener('input',()=>vState(F.permState,'msg-permState',true));
+  F.permPin.addEventListener('input',()=>vPin(F.permPin,'msg-permPin',true));
+  F.permCountry.addEventListener('input',()=>vTextLen(F.permCountry,'msg-permCountry',2,60,true));
+
+  F.username.addEventListener('input',()=>vUsername(F.username,'msg-username'));
+  F.password.addEventListener('input',()=>{
+    vPassword(F.password,'msg-password');
+    if(F.confirmPassword.value) vConfirmPassword(F.confirmPassword,'msg-confirmPassword');
+  });
+  F.confirmPassword.addEventListener('input',()=>vConfirmPassword(F.confirmPassword,'msg-confirmPassword'));
+  F.securityQuestion.addEventListener('change',()=>vSelectRequired(F.securityQuestion,'msg-securityQuestion'));
+  F.securityAnswer.addEventListener('input',()=>vTextLen(F.securityAnswer,'msg-securityAnswer',2,80,true));
+
+  F.programLevel.addEventListener('change',()=>vSelectRequired(F.programLevel,'msg-programLevel'));
+  F.program.addEventListener('change',()=>vSelectRequired(F.program,'msg-program'));
+  F.specialization.addEventListener('input',()=>vTextLen(F.specialization,'msg-specialization',0,60,false));
+  F.intakeYear.addEventListener('change',()=>vSelectRequired(F.intakeYear,'msg-intakeYear'));
+  F.intakeTerm.addEventListener('change',()=>vSelectRequired(F.intakeTerm,'msg-intakeTerm'));
+  F.studyMode.addEventListener('change',()=>vSelectRequired(F.studyMode,'msg-studyMode'));
+
+  F.lastInstitute.addEventListener('input',()=>vTextLen(F.lastInstitute,'msg-lastInstitute',3,100,true));
+  F.highestQualification.addEventListener('change',()=>vSelectRequired(F.highestQualification,'msg-highestQualification'));
+  F.gradingScale.addEventListener('change',()=>setOK(F.gradingScale,'msg-gradingScale'));
+  F.percentage.addEventListener('input',()=>vPercent(F.percentage,'msg-percentage',true));
+  F.yearOfPassing.addEventListener('change',()=>vSelectRequired(F.yearOfPassing,'msg-yearOfPassing'));
+  F.boardUniversity.addEventListener('input',()=>vTextLen(F.boardUniversity,'msg-boardUniversity',3,80,true));
+  F.subjectStream.addEventListener('input',()=>vTextLen(F.subjectStream,'msg-subjectStream',0,60,false));
+  F.backlogs.addEventListener('input',()=>vNonNegInt(F.backlogs,'msg-backlogs',50));
+  F.gapYears.addEventListener('input',()=>vNonNegInt(F.gapYears,'msg-gapYears',10));
+  F.achievements.addEventListener('input',()=>vTextLen(F.achievements,'msg-achievements',0,1000,false));
+
+  F.examType.addEventListener('change',()=>setOK(F.examType,'msg-examType'));
+  F.examRoll.addEventListener('input',()=>vTextLen(F.examRoll,'msg-examRoll',0,30,false));
+  F.examScore.addEventListener('input',()=>vNonNegInt(F.examScore,'msg-examScore',1000));
+  F.examPercentile.addEventListener('input',()=>{
+    const val = Number(F.examPercentile.value);
+    if(F.examPercentile.value==='') return setOK(F.examPercentile,'msg-examPercentile');
+    if(isNaN(val) || val<0 || val>100) return setError(F.examPercentile,'msg-examPercentile','0–100 only');
+    return setOK(F.examPercentile,'msg-examPercentile');
+  });
+  F.examDate.addEventListener('change',()=>setOK(F.examDate,'msg-examDate'));
+  F.englishProficiency.addEventListener('change',()=>setOK(F.englishProficiency,'msg-englishProficiency'));
+
+  F.fatherName.addEventListener('input',()=>vName(F.fatherName,'msg-fatherName'));
+  F.motherName.addEventListener('input',()=>vName(F.motherName,'msg-motherName'));
+  F.guardianRelation.addEventListener('change',()=>setOK(F.guardianRelation,'msg-guardianRelation'));
+  F.parentPhone.addEventListener('input',()=>vPhone(F.parentPhone,'msg-parentPhone',true));
+  F.parentEmail.addEventListener('input',()=>vEmail(F.parentEmail,'msg-parentEmail',false));
+  F.familyIncome.addEventListener('input',()=>vNonNegInt(F.familyIncome,'msg-familyIncome',100000000));
+  F.parentOccupation.addEventListener('input',()=>vTextLen(F.parentOccupation,'msg-parentOccupation',0,60,false));
+
+  F.category.addEventListener('change',()=>vSelectRequired(F.category,'msg-category'));
+  F.reservationClaim.addEventListener('change',()=>setOK(F.reservationClaim,'msg-reservationClaim'));
+  F.reservationDetails.addEventListener('input',()=>vTextLen(F.reservationDetails,'msg-reservationDetails',0,800,false));
+
+  F.medicalConditions.addEventListener('input',()=>vTextLen(F.medicalConditions,'msg-medicalConditions',0,120,false));
+  F.allergies.addEventListener('input',()=>vTextLen(F.allergies,'msg-allergies',0,120,false));
+  F.disabilitySupport.addEventListener('change',()=>setOK(F.disabilitySupport,'msg-disabilitySupport'));
+  F.accessibilityNotes.addEventListener('input',()=>vTextLen(F.accessibilityNotes,'msg-accessibilityNotes',0,800,false));
+
+  F.projects.addEventListener('input',()=>vTextLen(F.projects,'msg-projects',0,1200,false));
+  F.workExperience.addEventListener('input',()=>vTextLen(F.workExperience,'msg-workExperience',0,1200,false));
+  F.extraCurricular.addEventListener('input',()=>vTextLen(F.extraCurricular,'msg-extraCurricular',0,1000,false));
+  F.sop.addEventListener('input',()=>vTextLen(F.sop,'msg-sop',50,3000,true));
+
+  F.ref1Name.addEventListener('input',()=>vTextLen(F.ref1Name,'msg-ref1Name',3,80,true));
+  F.ref1Email.addEventListener('input',()=>vEmail(F.ref1Email,'msg-ref1Email',true));
+  F.ref1Phone.addEventListener('input',()=>vPhone(F.ref1Phone,'msg-ref1Phone',false));
+  F.ref1Relation.addEventListener('input',()=>vTextLen(F.ref1Relation,'msg-ref1Relation',0,120,false));
+
+  F.ref2Name.addEventListener('input',()=>vTextLen(F.ref2Name,'msg-ref2Name',3,80,true));
+  F.ref2Email.addEventListener('input',()=>vEmail(F.ref2Email,'msg-ref2Email',true));
+  F.ref2Phone.addEventListener('input',()=>vPhone(F.ref2Phone,'msg-ref2Phone',false));
+  F.ref2Relation.addEventListener('input',()=>vTextLen(F.ref2Relation,'msg-ref2Relation',0,120,false));
+
+  F.photo.addEventListener('change',()=>vFile(F.photo,'msg-photo',['image/jpeg','image/png'],1,true));
+  F.idDoc.addEventListener('change',()=>vFile(F.idDoc,'msg-idDoc',['application/pdf'],2,true));
+  F.marksheet.addEventListener('change',()=>vFile(F.marksheet,'msg-marksheet',['application/pdf'],5,true));
+  F.resume.addEventListener('change',()=>vFile(F.resume,'msg-resume',['application/pdf'],2,false));
+  F.sopUpload.addEventListener('change',()=>vFile(F.sopUpload,'msg-sopUpload',['application/pdf'],2,false));
+  F.examScorecard.addEventListener('change',()=>vFile(F.examScorecard,'msg-examScorecard',['application/pdf'],2,false));
+
+  F.agree.addEventListener('change',()=>vCheckboxRequired(F.agree,'msg-agree'));
+  F.honesty.addEventListener('change',()=>vCheckboxRequired(F.honesty,'msg-honesty'));
+
+  F.hostel.addEventListener('change',()=>setOK(F.hostel,'msg-hostel'));
+  F.transport.addEventListener('change',()=>setOK(F.transport,'msg-transport'));
+  F.mealPref.addEventListener('change',()=>setOK(F.mealPref,'msg-mealPref'));
+  F.howHeard.addEventListener('change',()=>setOK(F.howHeard,'msg-howHeard'));
+  F.additionalNotes.addEventListener('input',()=>vTextLen(F.additionalNotes,'msg-additionalNotes',0,1200,false));
+}
+
+/* Copy current address to permanent when checkbox toggled */
+function handlePermanentSame(){
+  if(F.permanentSame.checked){
+    F.permAddress1.value = F.addressLine1.value;
+    F.permAddress2.value = F.addressLine2.value;
+    F.permCity.value = F.city.value;
+    F.permState.value = F.state.value;
+    F.permPin.value = F.pincode.value;
+    F.permCountry.value = F.country.value;
+
+    vTextLen(F.permAddress1,'msg-permAddress1',6,160,true);
+    vTextLen(F.permAddress2,'msg-permAddress2',0,160,false);
+    vCity(F.permCity,'msg-permCity',true);
+    vState(F.permState,'msg-permState',true);
+    vPin(F.permPin,'msg-permPin',true);
+    vTextLen(F.permCountry,'msg-permCountry',2,60,true);
+  }
+}
+
+/* Form submit */
+const form = document.getElementById('appForm');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+bind();
+
+form.addEventListener('submit', (e)=>{
+  e.preventDefault();
+
+  // Run validations in logical sequence
+  const passes = [
+    vName(F.firstName,'msg-firstName'),
+    vOptionalName(F.middleName,'msg-middleName'),
+    vName(F.lastName,'msg-lastName'),
+    vPreferredName(F.preferredName,'msg-preferredName'),
+    vDOB(F.dob,'msg-dob'),
+    vSelectRequired(F.gender,'msg-gender'),
+    vNationality(F.nationality,'msg-nationality'),
+    vPassport(F.passportNo,'msg-passportNo'),
+    setOK(F.maritalStatus,'msg-maritalStatus'),
+    vAadhaar(F.aadhaar,'msg-aadhaar'),
+    setOK(F.bloodGroup,'msg-bloodGroup'),
+
+    vEmail(F.email,'msg-email',true),
+    vEmail(F.altEmail,'msg-altEmail',false),
+    vPhone(F.phone,'msg-phone',true),
+    vPhone(F.altPhone,'msg-altPhone',false),
+    vTextLen(F.addressLine1,'msg-addressLine1',6,160,true),
+    vTextLen(F.addressLine2,'msg-addressLine2',0,160,false),
+    vCity(F.city,'msg-city',true),
+    vState(F.state,'msg-state',true),
+    vPin(F.pincode,'msg-pincode',true),
+    vTextLen(F.country,'msg-country',2,60,true),
+
+    vTextLen(F.permAddress1,'msg-permAddress1',6,160,true),
+    vTextLen(F.permAddress2,'msg-permAddress2',0,160,false),
+    vCity(F.permCity,'msg-permCity',true),
+    vState(F.permState,'msg-permState',true),
+    vPin(F.permPin,'msg-permPin',true),
+    vTextLen(F.permCountry,'msg-permCountry',2,60,true),
+
+    vUsername(F.username,'msg-username'),
+    vPassword(F.password,'msg-password'),
+    vConfirmPassword(F.confirmPassword,'msg-confirmPassword'),
+    vSelectRequired(F.securityQuestion,'msg-securityQuestion'),
+    vTextLen(F.securityAnswer,'msg-securityAnswer',2,80,true),
+
+    vSelectRequired(F.programLevel,'msg-programLevel'),
+    vSelectRequired(F.program,'msg-program'),
+    vTextLen(F.specialization,'msg-specialization',0,60,false),
+    vSelectRequired(F.intakeYear,'msg-intakeYear'),
+    vSelectRequired(F.intakeTerm,'msg-intakeTerm'),
+    vSelectRequired(F.studyMode,'msg-studyMode'),
+
+    vTextLen(F.lastInstitute,'msg-lastInstitute',3,100,true),
+    vSelectRequired(F.highestQualification,'msg-highestQualification'),
+    setOK(F.gradingScale,'msg-gradingScale'),
+    vPercent(F.percentage,'msg-percentage',true),
+    vSelectRequired(F.yearOfPassing,'msg-yearOfPassing'),
+    vTextLen(F.boardUniversity,'msg-boardUniversity',3,80,true),
+    vTextLen(F.subjectStream,'msg-subjectStream',0,60,false),
+    vNonNegInt(F.backlogs,'msg-backlogs',50),
+    vNonNegInt(F.gapYears,'msg-gapYears',10),
+    vTextLen(F.achievements,'msg-achievements',0,1000,false),
+
+    setOK(F.examType,'msg-examType'),
+    vTextLen(F.examRoll,'msg-examRoll',0,30,false),
+    vNonNegInt(F.examScore,'msg-examScore',1000),
+    (()=>{
+      const val = Number(F.examPercentile.value);
+      if(F.examPercentile.value==='') return setOK(F.examPercentile,'msg-examPercentile');
+      if(isNaN(val) || val<0 || val>100) return setError(F.examPercentile,'msg-examPercentile','0–100 only');
+      return setOK(F.examPercentile,'msg-examPercentile');
+    })(),
+    setOK(F.examDate,'msg-examDate'),
+    setOK(F.englishProficiency,'msg-englishProficiency'),
+
+    vName(F.fatherName,'msg-fatherName'),
+    vName(F.motherName,'msg-motherName'),
+    setOK(F.guardianRelation,'msg-guardianRelation'),
+    vPhone(F.parentPhone,'msg-parentPhone',true),
+    vEmail(F.parentEmail,'msg-parentEmail',false),
+    vNonNegInt(F.familyIncome,'msg-familyIncome',100000000),
+    vTextLen(F.parentOccupation,'msg-parentOccupation',0,60,false),
+
+    vSelectRequired(F.category,'msg-category'),
+    setOK(F.reservationClaim,'msg-reservationClaim'),
+    vTextLen(F.reservationDetails,'msg-reservationDetails',0,800,false),
+
+    vTextLen(F.medicalConditions,'msg-medicalConditions',0,120,false),
+    vTextLen(F.allergies,'msg-allergies',0,120,false),
+    setOK(F.disabilitySupport,'msg-disabilitySupport'),
+    vTextLen(F.accessibilityNotes,'msg-accessibilityNotes',0,800,false),
+
+    vTextLen(F.projects,'msg-projects',0,1200,false),
+    vTextLen(F.workExperience,'msg-workExperience',0,1200,false),
+    vTextLen(F.extraCurricular,'msg-extraCurricular',0,1000,false),
+    vTextLen(F.sop,'msg-sop',50,3000,true),
+
+    vTextLen(F.ref1Name,'msg-ref1Name',3,80,true),
+    vEmail(F.ref1Email,'msg-ref1Email',true),
+    vPhone(F.ref1Phone,'msg-ref1Phone',false),
+    vTextLen(F.ref1Relation,'msg-ref1Relation',0,120,false),
+
+    vTextLen(F.ref2Name,'msg-ref2Name',3,80,true),
+    vEmail(F.ref2Email,'msg-ref2Email',true),
+    vPhone(F.ref2Phone,'msg-ref2Phone',false),
+    vTextLen(F.ref2Relation,'msg-ref2Relation',0,120,false),
+
+    vFile(F.photo,'msg-photo',['image/jpeg','image/png'],1,true),
+    vFile(F.idDoc,'msg-idDoc',['application/pdf'],2,true),
+    vFile(F.marksheet,'msg-marksheet',['application/pdf'],5,true),
+    vFile(F.resume,'msg-resume',['application/pdf'],2,false),
+    vFile(F.sopUpload,'msg-sopUpload',['application/pdf'],2,false),
+    vFile(F.examScorecard,'msg-examScorecard',['application/pdf'],2,false),
+
+    vCheckboxRequired(F.agree,'msg-agree'),
+    vCheckboxRequired(F.honesty,'msg-honesty'),
+
+    setOK(F.hostel,'msg-hostel'),
+    setOK(F.transport,'msg-transport'),
+    setOK(F.mealPref,'msg-mealPref'),
+    setOK(F.howHeard,'msg-howHeard'),
+    vTextLen(F.additionalNotes,'msg-additionalNotes',0,1200,false),
+  ];
+
+  const hasError = document.querySelectorAll('input.error, select.error, textarea.error').length > 0 ||
+                   passes.includes(false);
+  if(hasError){
+    submitBtn.blur();
+    window.scrollTo({ top: form.offsetTop - 12, behavior: 'smooth' });
+    return;
+  }
+
+  // Build payload summary (demo only; files not included in JSON)
+  const payload = {
+    identity:{
+      firstName:F.firstName.value.trim(),
+      middleName:F.middleName.value.trim(),
+      lastName:F.lastName.value.trim(),
+      preferredName:F.preferredName.value.trim(),
+      dob:F.dob.value,
+      gender:F.gender.value,
+      nationality:F.nationality.value.trim(),
+      passportNo:F.passportNo.value.trim(),
+      maritalStatus:F.maritalStatus.value,
+      aadhaar:F.aadhaar.value.trim(),
+      bloodGroup:F.bloodGroup.value
+    },
+    contact:{
+      email:F.email.value.trim(),
+      altEmail:F.altEmail.value.trim(),
+      phone:F.phone.value.trim(),
+      altPhone:F.altPhone.value.trim(),
+      current:{
+        address1:F.addressLine1.value.trim(),
+        address2:F.addressLine2.value.trim(),
+        city:F.city.value.trim(),
+        state:F.state.value.trim(),
+        pin:F.pincode.value.trim(),
+        country:F.country.value.trim()
+      },
+      permanent:{
+        address1:F.permAddress1.value.trim(),
+        address2:F.permAddress2.value.trim(),
+        city:F.permCity.value.trim(),
+        state:F.permState.value.trim(),
+        pin:F.permPin.value.trim(),
+        country:F.permCountry.value.trim()
+      }
+    },
+    account:{
+      username:F.username.value.trim(),
+      twoFA: F.twoFA.checked,
+      securityQuestion:F.securityQuestion.value,
+      securityAnswer:F.securityAnswer.value.trim()
+    },
+    program:{
+      level:F.programLevel.value,
+      program:F.program.value,
+      specialization:F.specialization.value.trim(),
+      intakeYear:F.intakeYear.value,
+      intakeTerm:F.intakeTerm.value,
+      studyMode:F.studyMode.value
+    },
+    academics:{
+      lastInstitute:F.lastInstitute.value.trim(),
+      highestQualification:F.highestQualification.value,
+      gradingScale:F.gradingScale.value,
+      score:F.percentage.value,
+      yearOfPassing:F.yearOfPassing.value,
+      boardUniversity:F.boardUniversity.value.trim(),
+      stream:F.subjectStream.value.trim(),
+      backlogs:F.backlogs.value,
+      gapYears:F.gapYears.value,
+      achievements:F.achievements.value.trim()
+    },
+    exams:{
+      examType:F.examType.value,
+      examRoll:F.examRoll.value.trim(),
+      examScore:F.examScore.value,
+      examPercentile:F.examPercentile.value,
+      examDate:F.examDate.value,
+      englishProficiency:F.englishProficiency.value
+    },
+    family:{
+      fatherName:F.fatherName.value.trim(),
+      motherName:F.motherName.value.trim(),
+      guardianRelation:F.guardianRelation.value,
+      parentPhone:F.parentPhone.value.trim(),
+      parentEmail:F.parentEmail.value.trim(),
+      familyIncome:F.familyIncome.value,
+      parentOccupation:F.parentOccupation.value.trim()
+    },
+    category:{
+      category:F.category.value,
+      reservationClaim:F.reservationClaim.checked,
+      reservationDetails:F.reservationDetails.value.trim()
+    },
+    health:{
+      medicalConditions:F.medicalConditions.value.trim(),
+      allergies:F.allergies.value.trim(),
+      disabilitySupport:F.disabilitySupport.checked,
+      accessibilityNotes:F.accessibilityNotes.value.trim()
+    },
+    profile:{
+      projects:F.projects.value.trim(),
+      workExperience:F.workExperience.value.trim(),
+      extraCurricular:F.extraCurricular.value.trim(),
+      sop:F.sop.value.trim()
+    },
+    references:[
+      {
+        name:F.ref1Name.value.trim(),
+        email:F.ref1Email.value.trim(),
+        phone:F.ref1Phone.value.trim(),
+        relation:F.ref1Relation.value.trim()
+      },
+      {
+        name:F.ref2Name.value.trim(),
+        email:F.ref2Email.value.trim(),
+        phone:F.ref2Phone.value.trim(),
+        relation:F.ref2Relation.value.trim()
+      }
+    ],
+    preferences:{
+      updates:F.updates.checked,
+      hostel:F.hostel.value,
+      transport:F.transport.value,
+      mealPref:F.mealPref.value,
+      howHeard:F.howHeard.value,
+      additionalNotes:F.additionalNotes.value.trim()
+    }
+  };
+
+  alert('Application submitted successfully!\\n\\n' + JSON.stringify(payload, null, 2));
+
+  // Reset form after submit
+  form.reset();
+  document.querySelectorAll('.msg').forEach(m => { m.textContent = ''; m.className = 'msg'; });
+  document.querySelectorAll('input, select, textarea').forEach(f => { f.classList.remove('error', 'ok'); });
+});
+
+resetBtn.addEventListener('click', () => {
+  form.reset();
+  document.querySelectorAll('.msg').forEach(m => { m.textContent = ''; m.className = 'msg'; });
+  document.querySelectorAll('input, select, textarea').forEach(f => { f.classList.remove('error', 'ok'); });
+});
+</script>
+</body>
+</html>
